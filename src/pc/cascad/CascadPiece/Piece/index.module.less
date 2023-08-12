@@ -1,0 +1,26 @@
+.postBlocks {
+  width: 100%;
+  word-break: break-word;
+  color:#231f20;
+  margin-top: 30px;
+  min-height: 200px;
+  :global {
+    .codex-editor__redactor {
+      padding-bottom: 42px !important;
+    }
+    .ce-block__content {
+      max-width: 100%;
+    }
+    .cdx-button {
+      display: none !important;
+    }
+  }
+}
+.ellipsis {
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; // 控制行数
+}

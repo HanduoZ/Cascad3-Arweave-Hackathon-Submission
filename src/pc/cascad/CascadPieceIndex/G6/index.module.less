@@ -1,0 +1,31 @@
+.legend {
+  :global {
+    ul.graphin-components-legend-content {
+      display: flex;
+      position: relative;
+      margin: 30px;
+      margin-top: 60px;
+      padding: 0px;
+      flex-direction: column;
+    }
+    ul.graphin-components-legend-content li.item {
+      display: inline-block;
+      vertical-align: top;
+      margin: 5px 10px;
+      cursor: pointer;
+      height: 30px;
+    }
+    ul.graphin-components-legend-content li.item > .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    ul.graphin-components-legend-content li.item > .label {
+      padding: 0px 5px;
+      font-size: 12px;
+      display: inline-block;
+      vertical-align: baseline;
+    }
+  }
+}

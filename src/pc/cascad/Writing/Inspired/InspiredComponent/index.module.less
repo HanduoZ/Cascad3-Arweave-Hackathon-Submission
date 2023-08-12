@@ -1,0 +1,19 @@
+.searchContainer {
+    display: flex;
+    align-items: center;
+    flex:1;
+    height: 44px;
+    border-radius: 20px;
+    position: relative;
+    :global {
+        .ant-select-selector {
+            height: 44px !important;
+            border-radius: 20px !important;
+        }
+        .ant-select,.ant-select:hover ,.ant-select-selector:hover,.ant-select-focused .ant-select-selector {
+            border-color:lightgray !important;
+            box-shadow: none !important;
+        }
+      
+    }
+  }

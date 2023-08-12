@@ -1,0 +1,23 @@
+.editor {
+    font-size: 20px;
+    line-height: 32px;
+    min-height: 200px;
+    :global {
+        .codex-editor__redactor {
+            padding-bottom: 24px !important;
+        }
+        .ce-block__content,.ce-toolbar__content {
+            margin-left: 0 !important;
+        }
+        .ce-inline-tool--link svg  {
+            display: none;
+        }
+        [data-tool=hyperlink]::before {
+            content: 'Link';
+            font-size: 14px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+}
