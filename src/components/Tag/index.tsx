@@ -54,6 +54,8 @@ const Tag = (props: TagProps) => {
                   ? CHECKED_BACKGROUN_OPACTIY
                   : NORMAL_BACKGROUN_OPACTIY
               ),
+              opacity:
+                checkedTags.includes(item.id) || !changeTags ? '1' : '0.3',
               boxShadow: checkedTags.includes(item.id)
                 ? `2px 2px 3px 0px ${item.tagColor}`
                 : '',

@@ -8,11 +8,14 @@ import Checklist from '@editorjs/checklist';
 import Quote from '@editorjs/quote';
 import InlineCode from '@editorjs/inline-code';
 import Underline from '@editorjs/underline';
+import AudioTool from 'editorjs-audio-tool';
+import 'editorjs-audio-tool/dist/style.css';
 import Marker from '@editorjs/marker';
 import Hyperlink from 'editorjs-hyperlink';
 import { memo, useCallback } from 'react';
 import { uploadImage } from 'src/api/common';
 import styles from './index.module.less';
+import { apiHost } from 'src/fetch/variable';
 
 const ReactEditorJS = createReactEditorJS();
 interface EditorProps {
@@ -73,6 +76,17 @@ const Editor = (props: EditorProps) => {
         rel: 'noreferrer',
       },
     },
+    audio: {
+      class: AudioTool,
+      config: {
+        // requestParser: imageHandler,
+        endpointUrl: `${apiHost}/cascad3-ar/uploadImage`,
+        respondParser: async (res: any) => {
+          const data = await res.json();
+          return data.itemId;
+        },
+      },
+    },
   };
   // data,
   // onChange: async (api) => {
@@ -85,10 +99,12 @@ const Editor = (props: EditorProps) => {
   const changeBlocks = useCallback(
     async (api: any) => {
       const blocks = await api.saver.save();
+
       if (onChange) onChange(blocks);
     },
     [onChange]
   );
+  console.log(data);
 
   return (
     <div className={styles.editor}>

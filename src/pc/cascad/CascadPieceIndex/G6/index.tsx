@@ -4,6 +4,7 @@ import type {
   TooltipValue,
   LegendChildrenProps,
   // NodeStyleLabel,
+  ContextMenuValue,
 } from '@antv/graphin';
 import useStarsDataReq from 'src/data/use-cascade-starsdata';
 import PieceCardInfo from './PieceCardInfo';
@@ -14,58 +15,88 @@ import { useContext, useEffect, useRef } from 'react';
 import PieceCardSearchView from './PieceCardSearch';
 // import { icons } from 'antd/lib/image/PreviewGroup';
 
-const { Tooltip, Legend } = Components;
+const { Tooltip, Legend, ContextMenu } = Components;
 
 const { Hoverable, ActivateRelations } = Behaviors;
 
 export default function G6(props: { cascadeId: string }) {
+  useEffect(() => {
+    document.oncontextmenu = () => {
+      return false;
+    };
+    return () => {
+      document.oncontextmenu = () => {
+        return true;
+      };
+    };
+  }, []);
   // const data = Utils.mock(10).tree().graphin();
   const { cascadeId } = props;
   // const graphinRef = useRef<any>();
   const { data } = useStarsDataReq({ cascadeId: cascadeId });
-  // console.log(data);
-  // const { graph } = useContext(GraphinContext);
-
-  // useEffect(() => {
-  //   if (graph) {
-  //     // const {
-  //     //   graph, // g6 的Graph实例
-  //     //   apis, // Graphin 提供的API接口
-  //     // } = graphinRef.current;
-  //     console.log('ref', graph, graph.getNodes);
-  //   }
-  // }, [graph]);
-
-  const CustomComponents = () => {
-    // 只要包裹在Graphin内的组件，都可以通过Context获得Graphin提供的graph实例和apis
-    const { graph } = useContext(GraphinContext);
-    console.log('ref', graph.getNodes());
-    // graph.getNodes()[0]._cfg?.model?.style.fontFamily = '';
-    return null;
-  };
 
   let grapinData: GraphinData = { nodes: [], edges: [] };
 
+  /** 实现break-words */
+  const formatText = (
+    input: string,
+    maxCharsPerLine: number,
+    maxLines: number
+  ) => {
+    const words = input.split(' ');
+    let lines = [];
+    let currentLine = '';
+
+    for (const word of words) {
+      if (currentLine.length + word.length <= maxCharsPerLine) {
+        currentLine += (currentLine === '' ? '' : ' ') + word;
+      } else {
+        if (lines.length > maxLines) {
+          break;
+        }
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+
+    if (currentLine !== '') {
+      lines.push(currentLine);
+    }
+
+    if (lines.length > maxLines) {
+      lines = lines.slice(0, maxLines);
+      const lastLine = lines[maxLines - 1];
+      lines[maxLines - 1] = lastLine.substring(0, maxCharsPerLine - 3) + '...';
+    }
+
+    return lines;
+  };
+
   data?.nodes.forEach((node, index) => {
+    // console.log('node.title.length', Math.floor(node.title.length / 13));
     // const colorIndex = Math.floor(Math.random() * colors.length);
     grapinData.nodes.push({
       id: node.id,
       label: node.title,
+      preventOverlap: true,
       // type: 'custom-node',
       // type: node.tagInfos[0].tag,
       // status: { hover: true },
+
       data: {
         tag: node.tagInfos[0].tag,
         // uuid: node.uuid,
       },
       uuid: node.uuid,
+
       style: {
         // icon: {
         //   type: 'image',
-        //   value: `https://avatars.githubusercontent.com/u/105033?v=4`,
-        //   size: [20, 20],
+        //   value: node.coverUrl,
+        //   opacity: 1,
+        //   size: 40 + 10 * node.downstreamCount,
         //   clip: {
-        //     r: 10,
+        //     r: (40 + 10 * node.downstreamCount) / 2 - 4,
         //   },
         // },
 
@@ -74,20 +105,22 @@ export default function G6(props: { cascadeId: string }) {
         //   fontFamily: fontFamily, // 指定FontFamily
         //   value: icons.home, // 指定图标的值
         // },
+
         label: {
-          value: node.title,
+          value: formatText(node.title, 13, 2).join('\n'),
           fill: node.isRead ? '#8C8C8C' : '#231F20',
-          offset: [0, 5],
+          // offset: [0, 0],
           fontSize: 14,
           // @ts-ignore  组件 未定义 强制使用
           fontWeight: 600,
           lineWidth: 4,
           fontFamily: 'Maven Pro',
+          // lineHeight: 13,
         },
         keyshape: {
           size: 40 + 10 * node.downstreamCount,
-          stroke: '',
-          fill: node.tagInfos[0].tagColor,
+          stroke: node.tagInfos[0].tagColor ? '' : '#0000000',
+          fill: node.tagInfos[0].tagColor ?? '#ffffff',
           fillOpacity: node.timeLevel / 10,
           lineWidth: 4,
         },
@@ -156,23 +189,73 @@ export default function G6(props: { cascadeId: string }) {
       },
     });
   });
+
   const defSpreingLen = (_edge: any, source: any, target: any) => {
     const nodeSize = 3;
-    const Sdegree = 50;
-    const Tdegree = 40;
+    const Sdegree = 95;
+    const Tdegree = 85;
     const minDegree = Math.min(Sdegree, Tdegree);
     return minDegree < 3 ? nodeSize * 5 : minDegree * nodeSize;
   };
   const layout = {
     type: 'gForce', // concentric
+    animation: false,
+    clusterNodeStrength: 1,
+    leafCluster: true,
     preset: {
       // type: 'gForce',
     },
     linkDistance: defSpreingLen,
   };
+
   const defaultNodeStatusStyle = {
     status: {
-      hover: {},
+      inactive: {
+        // style: {
+        keyshape: {},
+        label: {},
+
+        icon: {
+          type: 'image',
+          value: '',
+          size: '0',
+          opacity: 1,
+
+          clip: {
+            r: 4,
+          },
+          visible: false,
+        },
+        badges: [
+          {
+            position: 'RT',
+            type: 'text',
+            value: 8,
+            size: [20, 20],
+            color: '#fff',
+            fill: 'red',
+          },
+          // {
+          //   position: 'RT',
+          //   type: 'font',
+          //   fontFamily: fontFamily,
+          //   value: icons.home,
+          //   size: [20, 20],
+          //   color: '#fff',
+          //   fill: 'black',
+          // },
+          // {
+          //   position: 'RT',
+          //   type: 'image',
+          //   value: '/src/assets/media/png/splashicon.png',
+          //   size: [20, 20],
+          //   color: '#fff',
+          //   fill: 'red',
+          // },
+        ],
+        halo: {},
+        // },
+      },
     },
   };
   return (
@@ -183,7 +266,7 @@ export default function G6(props: { cascadeId: string }) {
       )}
     >
       <div className="absolute top-[25px] pointer-events-none select-none   right-[40px] z-[10]  h-[calc(100%-120px)]  overflow-hidde">
-        <PieceCardSearchView data={data?.nodes} cascadeId={cascadeId}/>
+        <PieceCardSearchView data={data?.nodes} cascadeId={cascadeId} />
       </div>
       <>
         <Graphin
@@ -196,16 +279,78 @@ export default function G6(props: { cascadeId: string }) {
             fontFamily: 'Maven Pro',
           }}
           data={grapinData}
+          // defaultNode={{
+          //   status: {
+          //     inactive: {
+          //       // halo: {
+          //       //   stroke: 'red',
+          //       //   lineWidth: 5,
+          //       //   // size: 0,
+          //       // },
+          //       keyshape: {
+          //         stroke: '#0000000',
+          //         fill: '#ffffff',
+          //         fillOpacity: 1,
+          //         lineWidth: 4,
+          //         // size: 0,
+          //       },
+
+          //       icon: {
+          //         type: 'image',
+          //         value: '',
+          //         size: 0,
+          //         clip: { r: 1 },
+          //         visible: false,
+          //       },
+          //       label: {
+          //         visible: true,
+          //       },
+          //     },
+          //   },
+          // }}
+          // nodeStateStyles={{
+          //   status: {
+          //     inactive: {
+          //       // halo: {
+          //       //   stroke: 'red',
+          //       //   lineWidth: 5,
+          //       //   // size: 0,
+          //       // },
+          //       keyshape: {
+          //         stroke: '#0000000',
+          //         fill: '#ffffff',
+          //         fillOpacity: 1,
+          //         lineWidth: 4,
+          //         // size: 0,
+          //       },
+          //       icon: {
+          //         type: 'image',
+          //         value: '',
+          //         size: 0,
+          //         clip: { r: 1 },
+          //         visible: false,
+          //       },
+          //     },
+          //   },
+          // }}
+          renderer="SVG"
           layout={layout}
-          fitView
+          minZoom={0.2}
+          maxZoom={2}
+          zoom={0.5}
+          autoFollowWithForce={true}
+          // fitView
           fitCenter
-          // nodeStateStyles={{}}
         >
-          <CustomComponents></CustomComponents>
+          {/* <CustomComponents></CustomComponents> */}
           <Tooltip
             bindType="node"
             placement="auto"
             hasArrow={false}
+            delay={{
+              show: 300,
+              hide: 500,
+            }}
             style={{
               background: '#fff',
               width: '226px',
@@ -216,7 +361,7 @@ export default function G6(props: { cascadeId: string }) {
             {(value: TooltipValue) => {
               if (value.model) {
                 const { model } = value;
-                console.log('model', value);
+                // console.log('model', value);
 
                 return (
                   <PieceCardInfo
@@ -241,10 +386,11 @@ export default function G6(props: { cascadeId: string }) {
               );
             }}
           </Legend>
-
+          {/* <ContextMenu style={{ background: '#fff' }} bindType="node">
+            {ContextmenuNode}
+          </ContextMenu> */}
           <Hoverable bindType="node" />
           <Hoverable bindType="edge" />
-
           <ActivateRelations trigger="click" />
         </Graphin>
       </>

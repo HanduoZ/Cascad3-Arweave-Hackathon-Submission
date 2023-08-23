@@ -4,8 +4,11 @@ import useUserInfo from 'src/data/use-user-info';
 import { ReactComponent as UploadHeaderIcon } from 'src/assets/media/svg/icon-upload-header.svg';
 import { updateUserInfoReq } from 'src/api/user';
 import UploadImage from 'src/components/UploadImage';
+import { useRouter } from 'next/router';
 
 const Account = () => {
+  const router = useRouter();
+  const CBUrl = router.query.cburl as string;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     faceUrl: '',
@@ -46,6 +49,9 @@ const Account = () => {
       if (res.data.status === 1) {
         mutateUserInfo();
         message.success('Success');
+        if (CBUrl) {
+          router.push(CBUrl);
+        }
       }
       setLoading(false);
     } catch (error: any) {

@@ -2,35 +2,41 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 import useUserInfo from 'src/hooks/use-user-info';
 import { ReactComponent as WritingIcon } from 'src/assets/media/svg/icon-writing.svg';
-import { ReactComponent as AlertIcon } from 'src/assets/media/svg/icon-alert.svg';
+import { ReactComponent as MenuIcon } from 'src/assets/media/svg/icon-menu.svg';
 import { useRouter } from 'next/router';
 import useRouterParams from 'src/hooks/use-router-params';
-import { Avatar, Popover } from 'antd';
+import { Button } from 'antd';
 import CascadInfoProvider from './CascadInfoProvider';
 import CascadeInfo from './CascadeInfo';
-import useUnreadMsgCountReq from 'src/data/use-un-read-msg-count';
-import MessageList from './MessageList';
-import styles from './index.module.less';
-import { UserOutlined } from '@ant-design/icons';
-import UserInfo from '../UserInfo';
+import DrawerCom from '../DrawerCom';
+import { useSetRecoilState } from 'recoil';
+import { drawerOpen } from 'src/recoil/collaps';
+import User from '../User';
 
 const CascadLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+
   const { cascadId } = useRouterParams();
+
+  const setDrawerOpenRecoil = useSetRecoilState(drawerOpen);
 
   /** hook */
   const { data: userInfo } = useUserInfo();
 
-  /** 接口-未读消息数量 */
-  const { data: unreadMsgCount } = useUnreadMsgCountReq();
-
   return (
     <div className="h-full flex-1 flex flex-col overflow-hidden">
+      <Button
+        type="text"
+        icon={<MenuIcon />}
+        onClick={() => {
+          setDrawerOpenRecoil(true);
+        }}
+        className="w-[64px] h-[64px] !absolute left-8 top-6"
+      />
       <div
-        className={`${
-          userInfo ? 'pl-[116px]' : 'pl-8'
-        } pr-[54px] h-[80px] flex items-center justify-between`}
+        className={`pl-[116px] pr-[54px] h-[80px] flex items-center justify-between`}
       >
+        <DrawerCom />
         <CascadeInfo />
         <div className="flex shrink-0 items-center">
           {userInfo ? (
@@ -53,36 +59,11 @@ const CascadLayout = ({ children }: { children: ReactNode }) => {
                   />
                 </div>
               </Link>
-              <Popover
-                placement="bottom"
-                content={<MessageList unreadMsgCount={unreadMsgCount} />}
-                showArrow={false}
-                overlayClassName={styles.popover}
-              >
-                <div className="ml-5 relative flex items-center cursor-pointer">
-                  <AlertIcon />
-                  {!!unreadMsgCount && (
-                    <div className="bg-[#833B3B] w-[18px] h-[18px] rounded-full border-[3px] absolute -right-[4px] -top-[6px] border-[#fff]"></div>
-                  )}
-                </div>
-              </Popover>
-              <Popover
-                placement="bottomLeft"
-                content={<UserInfo />}
-                showArrow={false}
-                overlayClassName={styles.popover}
-              >
-                <Avatar
-                  size={40}
-                  className="cursor-pointer !ml-5"
-                  src={userInfo?.faceUrl}
-                  icon={<UserOutlined />}
-                />
-              </Popover>
+              <User />
             </div>
           ) : (
             <div className="flex items-center">
-              <Link href="/login">
+              <Link href={`/login?cburl=${router.asPath}`}>
                 <div
                   className={`w-[150px] h-[40px] btn rounded-[20px] bg-[#BAF9C140] bg-opacity-25`}
                 >

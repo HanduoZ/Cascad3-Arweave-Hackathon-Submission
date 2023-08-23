@@ -72,7 +72,7 @@ const MessageList = (props: MessageListProps) => {
             className="cursor-pointer underline text-[rgba(131,59,59,1)] text-[14px]"
             onClick={() => readMessage(0)}
           >
-            I've read them all!
+            Mark all as read
           </div>
         </div>
       )}

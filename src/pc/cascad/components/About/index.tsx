@@ -42,31 +42,48 @@ const About = () => {
             {cascadDetail?.description}
           </div>
         )}
+        {cascadDetail?.arIdUrl && (
+          <div className="text-[#5E5E5E] text-[14px] mt-[10px]">
+            This Cascade is under the{' '}
+            <a
+              href={cascadDetail.arIdUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-underline"
+            >
+              Universal Data License
+            </a>
+            .
+          </div>
+        )}
         {(cascadDetail?.role === 0 ||
           cascadDetail?.role === 10 ||
           linksData.length > 0) && (
           <Space className={`mt-4`} size={10} wrap>
-            {linksData.length > 0 ? (
-              linksData.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`h-[22px] w-[22px] rounded-full flex items-center justify-center`}
-                >
-                  <img
-                    src={item.iconUrl}
-                    alt=""
-                    className="rounded-full w-full h-full"
-                  />
-                </a>
-              ))
-            ) : (
-              <Link href={`/${cascadId}/cascadsetting?menu=4`}>
-                <div className="underline text-[14px]">Add External Links</div>
-              </Link>
-            )}
+            {
+              linksData.length > 0
+                ? linksData.map((item) => (
+                    <a
+                      key={item.id}
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`h-[22px] w-[22px] rounded-full flex items-center justify-center`}
+                    >
+                      <img
+                        src={item.iconUrl}
+                        alt=""
+                        className="rounded-full w-full h-full"
+                      />
+                    </a>
+                  ))
+                : null
+              // (
+              //   <Link href={`/${cascadId}/cascadsetting?menu=4`}>
+              //     <div className="underline text-[14px]">Add External Links</div>
+              //   </Link>
+              // )
+            }
           </Space>
         )}
       </div>

@@ -8,6 +8,7 @@ import type { InspiredVOListData } from 'src/api/cascad/piece';
 import { ReactComponent as ReduceIcon } from 'src/assets/media/svg/icon-reduce.svg';
 import { ReactComponent as IncreaseIcon } from 'src/assets/media/svg/icon-increase.svg';
 import useRouterParams from 'src/hooks/use-router-params';
+import clsx from 'clsx';
 
 interface InspiredComponentProps {
   data: {
@@ -95,6 +96,7 @@ const InspiredComponent = (props: InspiredComponentProps) => {
     },
     [changeInspired, data.id, data.ratio]
   );
+
   return (
     <div className="flex items-center mb-5 w-[calc(100%-24px)]">
       {showDel ? (
@@ -156,8 +158,15 @@ const InspiredComponent = (props: InspiredComponentProps) => {
                     message.warning('Need a number.');
                   }
                 }}
-                suffix="%"
-                className="h-full !text-[16px] !border-none !shadow-none !text-center"
+                suffix={
+                  <span className="text-[#25BE22E5] text-[20px] font-semibold">
+                    %
+                  </span>
+                }
+                className={clsx(
+                  'h-full !border-none !shadow-none !pl-0 !text-center !text-[#25BE22E5] !text-[20px] !font-semibold',
+                  styles.input
+                )}
               />
             </div>
             <div

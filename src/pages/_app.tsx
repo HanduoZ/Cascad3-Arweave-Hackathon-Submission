@@ -41,10 +41,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <ConfigProvider>
             <SWRConfig value={swrConfig}>
               <UserInfoProvider>
-                <div
-                  style={{ height: '100vh' }}
-                  className="flex flex-col min-h-[660px]"
-                >
+                <div style={{ height: '100vh' }} className="flex flex-col">
                   <Component {...pageProps} />
                 </div>
               </UserInfoProvider>

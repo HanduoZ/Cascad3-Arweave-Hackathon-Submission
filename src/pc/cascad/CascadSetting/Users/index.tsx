@@ -98,17 +98,22 @@ const Users = () => {
       <div className="mt-[30px]">
         {pieceListData.map((item) => (
           <div
-            className="h-[102px] flex items-center border-b-[1px] border-border px-[10px]"
+            className="py-5 flex items-center border-b-[1px] mb-[10px] border-border px-[10px]"
             key={item.id}
           >
             <div className="flex-1 overflow-hidden text-first">
-              <div className="text-[20px] font-medium leading-6 overflow-hidden w-[calc(100%-40px)] whitespace-nowrap text-ellipsis">
+              <div className="flex items-center">
+                <span className="h-[18px] text-[14px] flex items-center">
+                  {userRole(item.role).roleText}
+                </span>
+              </div>
+              <div className="text-[20px] font-medium leading-6 overflow-hidden w-[calc(100%-40px)] whitespace-nowrap text-ellipsis mt-[15px]">
                 {item.username || '-'}
               </div>
-              <div className="mt-1 flex items-center">
-                <span className="ml-2 px-2 border border-border h-6 text-[12px] rounded-[10px] flex items-center">
-                  {userRole(item.role)}
-                </span>
+              <div className="mt-[6px]">{item.email || '-'}</div>
+              <div className="mt-[6px] text-[#5E5E5E]">
+                {' '}
+                {userRole(item.role).roleDes}
               </div>
             </div>
             {item.role !== 0 && (
@@ -131,7 +136,7 @@ const Users = () => {
                           className="w-full h-full flex items-center justify-center"
                           onClick={() => changeUserRole(item.id, 20)}
                         >
-                          Set as regular user
+                          Remove Permissions
                         </div>
                       ),
                     },

@@ -1,11 +1,15 @@
 import { Alert } from 'antd';
-import Link from 'next/link';
 import useCascadeTagListReq from 'src/data/use-cascade-tag-list';
 import useCascadInfo from 'src/hooks/use-cascad-info';
 import useRouterParams from 'src/hooks/use-router-params';
 import { notAuthNotice } from '../../static';
+import { Dispatch, SetStateAction } from 'react';
 
-const AlertNotice = () => {
+interface AlertNoticeProps {
+  setAddTagVisible: Dispatch<SetStateAction<boolean>>;
+}
+const AlertNotice = (props: AlertNoticeProps) => {
+  const { setAddTagVisible } = props;
   const { cascadId } = useRouterParams();
 
   /** hook-空间详情 */
@@ -26,9 +30,12 @@ const AlertNotice = () => {
                   The current space has not been
                   <span className="font-medium mx-1">tag</span> yet, so the
                   piece can only be temporarily stored.{' '}
-                  <Link href={`/${cascadId}/cascadsetting?menu=3`}>
-                    <span className="underline">Set Up Now</span>
-                  </Link>
+                  <span
+                    className="underline cursor-pointer"
+                    onClick={() => setAddTagVisible(true)}
+                  >
+                    Set Up Now
+                  </span>
                 </div>
               }
               type="warning"

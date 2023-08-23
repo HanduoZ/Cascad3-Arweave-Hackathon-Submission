@@ -29,7 +29,7 @@ export const DEFAULT_PAGE_SIZE = 10;
 export const TOKEN = 'authorization';
 
 /** 常态背景透明度配置 */
-export const NORMAL_BACKGROUN_OPACTIY = 0.2;
+export const NORMAL_BACKGROUN_OPACTIY = 0.1;
 
 /** 选中背景透明度配置 */
-export const CHECKED_BACKGROUN_OPACTIY = 0.4;
+export const CHECKED_BACKGROUN_OPACTIY = 0.2;

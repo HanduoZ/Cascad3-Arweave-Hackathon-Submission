@@ -23,6 +23,7 @@ const UploadImage = (props: UploadImageProps) => {
   return isCrop ? (
     <ImgCrop
       cropShape={cropShape}
+      minZoom={0.5}
       cropperProps={{ cropSize: { width, height } } as any}
     >
       <Upload

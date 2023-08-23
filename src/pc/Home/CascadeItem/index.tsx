@@ -65,7 +65,6 @@ const CascadeItem = (props: CascadeItemProps) => {
       // href={`/testtmp/test`}
       key={item.id}
       prefetch={false}
-      target="_blank"
     >
       {/* h-[469px]   489 移除 tax rate*/}
       <div className="rounded-[20px] relative text-first cursor-pointer overflow-y-auto border border-border-second  hover:shadow-hover h-[469px] w-[328px] overflow-hidden z-1">

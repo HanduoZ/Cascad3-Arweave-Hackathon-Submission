@@ -25,6 +25,23 @@ export function registerReq(params: {
 }) {
   return fetch.post<ApiResData<string>>('/client/common/register', params);
 }
+/** 检测邮箱是否已注册 */
+export function checkEmailExistReq(params: {
+  email: string;
+}) {
+  return fetch.get<ApiResData<boolean>>('/client/common/checkEmailExist', {
+    params,
+  });
+}
+
+/** 检测用户名是否已经使用 */
+export function checkUsernameExistReq(params: {
+  username: string;
+}) {
+  return fetch.get<ApiResData<boolean>>('/client/common/checkUsernameExist', {
+    params,
+  });
+}
 
 /** 找回密码 */
 export function findbackPswReq(params: {

@@ -333,6 +333,19 @@ export function updateArIdReq(pieceId: number, cascadeId: string) {
   );
 }
 
+/** 空间上链或者更新链 */
+export function updateCascadeArIdReq(cascadeId: string) {
+  return fetch.post<ApiResData<boolean>>(
+    '/client/cascade/su/updateArId',
+    null,
+    {
+      headers: {
+        cascadeInfo: JSON.stringify({ cascadeId: cascadeId }),
+      },
+    }
+  );
+}
+
 /** 打赏 */
 export function rewardReq(
   params: {

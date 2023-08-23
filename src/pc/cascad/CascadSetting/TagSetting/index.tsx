@@ -30,7 +30,7 @@ const TagSetting = () => {
   const {
     data: tagList = [],
     mutate,
-    isValidating,
+    isLoading,
   } = useCascadeTagManageReq(cascadId);
 
   /** 分了 */
@@ -116,7 +116,7 @@ const TagSetting = () => {
         </div>
       </div>
       <div className="mt-6 pb-4 border-b-[1px] border-border mb-6">
-        {isValidating ? (
+        {isLoading ? (
           <div className="flex items-center h-[60px] justify-center">
             <span className="mr-2">
               <i className="fa fa-circle-o-notch fa-spin " />
@@ -126,7 +126,7 @@ const TagSetting = () => {
         ) : tagList.length > 0 ? (
           <div>
             <div className="text-second mb-3">Enable</div>
-            <Space size={10}>
+            <Space size={10} wrap>
               {tagCategory.enable
                 .filter((item) => !item.isDeleted)
                 .map((item) => (
@@ -142,6 +142,7 @@ const TagSetting = () => {
                           ? CHECKED_BACKGROUN_OPACTIY
                           : NORMAL_BACKGROUN_OPACTIY
                       ),
+                      opacity: tagId === item.id ? '1' : '0.3',
                       boxShadow:
                         tagId === item.id
                           ? `2px 2px 3px 0px ${item.tagColor}`
@@ -290,7 +291,7 @@ const TagSetting = () => {
                   <i className="fa fa-circle-o-notch fa-spin " />
                 </span>
               )}
-              Styling
+              Save
             </button>
           </div>
         </div>

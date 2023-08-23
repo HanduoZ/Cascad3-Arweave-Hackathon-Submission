@@ -6,6 +6,7 @@ import useRouterParams from 'src/hooks/use-router-params';
 import { addOrUpdateLinkReq } from 'src/api/cascad/piece';
 import type { CascadeExternalLinkInfo } from 'src/data/use-cascade-external-link-list';
 import UploadImage from 'src/components/UploadImage';
+import { presetLinkImag } from '../../static';
 
 interface AddLinkModalProps {
   open: boolean;
@@ -82,21 +83,39 @@ const AddLinkModal = (props: AddLinkModalProps) => {
       footer={false}
     >
       <Form onFinish={onFinish} autoComplete="off" form={form}>
-        <div className="flex mb-4 mt-[38px]">
-          <div className="border-[rgba(136, 136, 136, 0.6)] hover:shadow-hover border rounded-[40px]">
-            <UploadImage
-              width={200}
-              cropShape={'round'}
-              height={200}
-              onChange={handleChange}
-            >
-              <div className="flex items-center h-[40px] rounded-[40px] px-5">
-                <UploadIcon className="mr-5" />
-                <div>Add Image</div>
+        <div className="flex items-center mt-[38px] mb-4">
+          <div className="flex items-center">
+            {presetLinkImag.map((item) => (
+              <div
+                onClick={() => setIconUrl(item.link)}
+                className={`cursor-pointer duration-300 flex items-center mr-[15px] ${
+                  iconUrl === item.link ? 'opacity-100' : 'opacity-40'
+                }`}
+                key={item.link}
+              >
+                {item.icon}
               </div>
-            </UploadImage>
+            ))}
           </div>
-          {iconUrl && <Avatar size={40} src={iconUrl} className="!ml-6" />}
+          <div className="flex ml-3 items-center">
+            {iconUrl &&
+              !presetLinkImag.find((item) => item.link === iconUrl) && (
+                <Avatar size={35} src={iconUrl} className="!mr-6" />
+              )}
+            <div className="border-[rgba(136, 136, 136, 0.6)] hover:shadow-hover border rounded-[40px]">
+              <UploadImage
+                width={200}
+                cropShape={'round'}
+                height={200}
+                onChange={handleChange}
+              >
+                <div className="flex items-center h-[40px] rounded-[40px] px-5">
+                  <UploadIcon className="mr-5" />
+                  <div>Add Image</div>
+                </div>
+              </UploadImage>
+            </div>
+          </div>
         </div>
         <div className="text-second mb-3 mt-5">Title</div>
         <Form.Item name="name" rules={[{ required: true }]}>

@@ -48,7 +48,6 @@ const PieceItem = (props: PieceProps) => {
           ? `/${cascadId}/writing/${data.uuid}`
           : `/${cascadId}/${data.uuid}`
       }
-      target="_blank"
       className="w-full"
     >
       <div

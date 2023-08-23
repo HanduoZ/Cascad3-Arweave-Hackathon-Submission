@@ -5,7 +5,8 @@ export interface CascadeDetailData {
   /**
    * arId
    */
-  arId?: string;
+  arId: string;
+  arIdUrl: string;
   /**
    * 唯一标识，用于二级域名
    */

@@ -89,7 +89,7 @@ const PieceCardInfoView = (props: {
                   <div className="text-[25px] h-[34px] mr-4 font-medium w-[340px] line-clamp-1  text-ellipsis break-words">
                     {pieceCardInfo?.title}
                   </div>
-                  <div className="h-[30]">
+                  <div className="h-[30] ">
                     {pieceCardInfo?.tagInfos[0] && (
                       <Tag
                         tagList={pieceCardInfo.tagInfos}
@@ -98,7 +98,7 @@ const PieceCardInfoView = (props: {
                       />
                     )}
                   </div>
-                  <div className="text-[16px] leading-[23px] h-[46px]">
+                  <div className="text-[16px] leading-[23px] mr-4 h-[46px]  w-[340px]">
                     <div className="line-clamp-2 text-[#231F20] break-words">
                       {pieceCardInfo?.subTitle || '-'}
                     </div>

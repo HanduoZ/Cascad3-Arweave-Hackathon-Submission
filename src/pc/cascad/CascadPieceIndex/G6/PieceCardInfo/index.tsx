@@ -20,7 +20,7 @@ const PieceCardInfoView = (props: { cascadeId: string; pieceUuid: string }) => {
     cascadeId,
     pieceUuid,
   });
-  console.log(pieceCardInfo);
+  // console.log(pieceCardInfo);
   useEffect(() => {}, [pieceUuid]);
 
   return (
@@ -31,57 +31,57 @@ const PieceCardInfoView = (props: { cascadeId: string; pieceUuid: string }) => {
       <Spin spinning={isLoading} size="large">
         <div className="w-full h-full">
           {pieceCardInfo && (
-            <Link
-              key={pieceCardInfo.id}
-              href={`/${cascadeId}/${pieceCardInfo.uuid}`}
-              style={{
-                textDecoration: 'none',
-              }}
-              className="w-full h-full"
-            >
-              <div className="flex justify-items-center flex-col  w-[226px] relative h-full  overflow-hidde">
-                {/* <div className="p-[10px] px-0 font-semibold">Preview</div> */}
-                <div
-                  className={
-                    'relative !w-100  h-[120px] overflow-hidden !bg-[#434343]'
-                  }
-                >
-                  {pieceCardInfo?.coverUrl && (
-                    <img
-                      src={pieceCardInfo.coverUrl}
-                      alt=""
-                      style={{
-                        objectFit: 'fill',
-                        width: '100%',
-                      }}
-                    />
-                  )}
-                </div>
-                {/* Tag */}
-                <div className="absolute right-[6px] top-[8px] ">
-                  {pieceCardInfo?.tagInfos[0] && (
+            <div className="flex justify-items-center flex-col  w-[226px] relative h-full  overflow-hidde">
+              {/* <div className="p-[10px] px-0 font-semibold">Preview</div> */}
+              <div
+                className={
+                  'relative !w-100  h-[100px] overflow-hidden !bg-[#434343]'
+                }
+              >
+                {pieceCardInfo?.coverUrl && (
+                  <img
+                    src={pieceCardInfo.coverUrl}
+                    alt=""
+                    style={{
+                      objectFit: 'fill',
+                      width: '100%',
+                    }}
+                  />
+                )}
+              </div>
+              {/* Tag */}
+              <div className="absolute right-[6px] top-[8px] ">
+                {pieceCardInfo?.tagInfos[0] && (
+                  <div
+                    className="flex items-center  !h-[24px] bg-[white] border rounded-[16px]  overflow-hidden  text-[14px]"
+                    style={{
+                      borderColor: pieceCardInfo?.tagInfos[0].tagColor,
+                    }}
+                  >
                     <div
-                      className="flex items-center  !h-[24px] bg-[white] border rounded-[16px]  overflow-hidden  text-[14px]"
                       style={{
-                        borderColor: pieceCardInfo?.tagInfos[0].tagColor,
+                        color: pieceCardInfo?.tagInfos[0].tagColor,
+                        background: colorConvert(
+                          pieceCardInfo?.tagInfos[0].tagColor,
+                          0.2
+                        ),
                       }}
                     >
-                      <div
-                        style={{
-                          color: pieceCardInfo?.tagInfos[0].tagColor,
-                          background: colorConvert(
-                            pieceCardInfo?.tagInfos[0].tagColor,
-                            0.2
-                          ),
-                        }}
-                      >
-                        <span className={` px-2 `}>
-                          {pieceCardInfo?.tagInfos[0].tag}
-                        </span>
-                      </div>
+                      <span className={` px-2 `}>
+                        {pieceCardInfo?.tagInfos[0].tag}
+                      </span>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
+              </div>
+              <Link
+                key={pieceCardInfo.id}
+                href={`/${cascadeId}/${pieceCardInfo.uuid}`}
+                style={{
+                  textDecoration: 'none',
+                }}
+                className="w-full h-full"
+              >
                 <div className="h-[160px] px-[12px] w-full">
                   <div className="flex flex-col mt-2 gap-2">
                     <div className="flex relative items-center w-full leading-[18px] !text-frist text-[14px] h-[18px]">
@@ -148,8 +148,8 @@ const PieceCardInfoView = (props: { cascadeId: string; pieceUuid: string }) => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </div>
           )}
         </div>
       </Spin>

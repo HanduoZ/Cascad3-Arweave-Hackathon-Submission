@@ -20,6 +20,8 @@ import Confirm from './Confirm';
 import AlertNotice from './AlertNotice';
 import Inspired from './Inspired';
 import AddTag from './AddTag';
+import useUserInfo from 'src/hooks/use-user-info';
+
 // editor
 const Editor = dynamic(() => import('src/components/Editor'), {
   ssr: false,
@@ -30,6 +32,8 @@ const WritingPage = () => {
   const router = useRouter();
   const debounceRef = useRef<any>();
   const { cascadId, pieceUuid } = useRouterParams();
+  const searchPieceId = router.query.pieceId as string; // 查询参数
+  const { data: userInfo } = useUserInfo();
 
   const [loading, setLoading] = useState(false);
   const [addTagVisible, setAddTagVisible] = useState(false); // 新增tag
@@ -38,9 +42,17 @@ const WritingPage = () => {
   const [saveDarft, setSaveDarft] = useState(false); // 保存草稿
   const [blocksContent, setBlocksContent] = useState<any>(); // 富文本内容
   const [uuid, setUuid] = useState(''); // 自动保存返回回来的uuid
-  const [upstreamPieceList, setUpstreamPieceList] = useState<any[]>([
-    { id: getUUID(8, 16), ratio: defaultUpstreamRatio },
-  ]); // 上游数据
+  const [upstreamPieceList, setUpstreamPieceList] = useState<any[]>(() =>
+    searchPieceId
+      ? [
+          {
+            id: getUUID(8, 16),
+            ratio: defaultUpstreamRatio,
+            upstreamPieceId: Number(searchPieceId),
+          },
+        ]
+      : [{ id: getUUID(8, 16), ratio: defaultUpstreamRatio }]
+  ); // 上游数据
   const [data, setData] = useState({
     title: '',
     subTitle: '',
@@ -312,40 +324,44 @@ const WritingPage = () => {
   return (
     <div className="h-full overflow-auto">
       <div className="min-w-[1000px] pl-[265px] relative">
-        <AlertNotice />
-        <div className="absolute right-[72px] top-[40px] flex flex-col justify-end">
-          <button
-            className="button-grey !px-[25px]"
-            onClick={() => handleSubmit(0)}
-          >
-            {saveDarft && loading && (
-              <span className="mr-2">
-                <i className="fa fa-circle-o-notch fa-spin " />
-              </span>
-            )}
-            Save Draft
-          </button>
-          <button
-            className="button-green h-12 mt-8 px-[30px]"
-            onClick={() => {
-              if (
-                upstreamPieceList.filter((item) => item.upstreamPieceId)
-                  .length === 0 &&
-                localStorage.getItem('showNotice') !== 'false'
-              ) {
-                setConfirmVisible(true);
-              } else {
-                handleSubmit();
-              }
-            }}
-          >
-            {!saveDarft && loading && (
-              <span className="mr-2">
-                <i className="fa fa-circle-o-notch fa-spin " />
-              </span>
-            )}
-            Publish
-          </button>
+        <AlertNotice setAddTagVisible={setAddTagVisible} />
+        <div className="absolute right-[72px] top-[40px]">
+          <div className="flex justify-end">
+            <button
+              className="button-grey !px-[25px]"
+              onClick={() => handleSubmit(0)}
+            >
+              {saveDarft && loading && (
+                <span className="mr-2">
+                  <i className="fa fa-circle-o-notch fa-spin " />
+                </span>
+              )}
+              Save Draft
+            </button>
+          </div>
+          <div className="flex justify-end">
+            <button
+              className="button-green h-12 mt-8 px-[30px]"
+              onClick={() => {
+                if (
+                  upstreamPieceList.filter((item) => item.upstreamPieceId)
+                    .length === 0 &&
+                  localStorage.getItem(`showNotice-${userInfo?.id}`) !== 'false'
+                ) {
+                  setConfirmVisible(true);
+                } else {
+                  handleSubmit();
+                }
+              }}
+            >
+              {!saveDarft && loading && (
+                <span className="mr-2">
+                  <i className="fa fa-circle-o-notch fa-spin " />
+                </span>
+              )}
+              Publish
+            </button>
+          </div>
         </div>
         <div>
           <input
@@ -398,10 +414,10 @@ const WritingPage = () => {
         </div>
         <div className="flex">
           <div className={clsx('hover:shadow-hover', styles.addImageContainer)}>
-            <UploadImage isCrop={false} onChange={handleChange}>
+            <UploadImage width={200} height={200} onChange={handleChange}>
               <div className="flex items-center h-[45px] rounded-[40px] px-5">
                 <UploadIcon className="mr-5" />
-                <div className={styles.addImageText}>Add Cover Image</div>
+                <div className="text-[20px] text-first">Add Cover Image</div>
               </div>
             </UploadImage>
           </div>
@@ -409,7 +425,7 @@ const WritingPage = () => {
         {data.coverUrl && (
           <img className={styles.coverImage} src={data.coverUrl} alt="" />
         )}
-        <div className="min-h-[200px] mt-10 w-[calc(100%-100px)]">
+        <div className="min-h-[200px] my-10 w-[calc(100%-100px)] border border-border px-4">
           {!isValidating && (
             <Editor readOnly={false} onChange={onChangeContent} data={blocks} />
           )}
@@ -424,11 +440,10 @@ const WritingPage = () => {
           <button
             className="button-green h-12 px-[30px]"
             onClick={() => {
-              console.log(localStorage.getItem('showNotice'));
               if (
                 upstreamPieceList.filter((item) => item.upstreamPieceId)
                   .length === 0 &&
-                localStorage.getItem('showNotice') !== 'false'
+                localStorage.getItem(`showNotice-${userInfo?.id}`) !== 'false'
               ) {
                 setConfirmVisible(true);
               } else {

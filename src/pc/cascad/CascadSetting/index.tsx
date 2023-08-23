@@ -1,13 +1,65 @@
 import { useEffect, useState } from 'react';
 import { ReactComponent as BackIcon } from 'src/assets/media/svg/icon-back.svg';
 import { useRouter } from 'next/router';
-import { leftMenu } from './static';
+import useCascadInfo from 'src/hooks/use-cascad-info';
+
+import useRouterParams from 'src/hooks/use-router-params';
+import Posts from './Posts';
+import Users from './Users';
+import General from './General';
+import TagSetting from './TagSetting';
+import ExternalLinks from './ExternalLinks';
+
+/** 左侧菜单 */
+export const leftMenu = [
+  {
+    value: '0',
+    label: 'Posts',
+    component: <Posts />,
+  },
+  {
+    value: '1',
+    label: 'Users',
+    component: <Users />,
+  },
+  {
+    value: '2',
+    label: 'General',
+    component: <General />,
+  },
+  {
+    value: '3',
+    label: 'Tag Setting',
+    component: <TagSetting />,
+  },
+  {
+    value: '4',
+    label: 'External Links',
+    component: <ExternalLinks />,
+  },
+  // {
+  //   value: '5',
+  //   label: 'Access Policy',
+  //   component: createElement(AccessPolicy),
+  // },
+];
 
 const CascadSetting = () => {
   const router = useRouter();
   const menu = router.query.menu as string;
+  const { cascadId } = useRouterParams();
 
   const [checkValue, setCheckValue] = useState('0');
+
+  /** hook-空间详情 */
+  const { cascadDetail } = useCascadInfo();
+
+  /** 权限判断 */
+  useEffect(() => {
+    if (cascadDetail && cascadDetail?.role !== 0 && cascadDetail?.role !== 10) {
+      router.push(`/${cascadId}`);
+    }
+  }, [cascadDetail, cascadId, router]);
 
   /** 设置链接数据 */
   useEffect(() => {

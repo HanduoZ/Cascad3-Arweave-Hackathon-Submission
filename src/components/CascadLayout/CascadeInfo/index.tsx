@@ -96,7 +96,7 @@ const CascadeInfo = () => {
         userInfo &&
         (cascadDetail?.role === -1 ? (
           <div
-            className={`px-4 ml-5 button-yellow`}
+            className={`ml-5 !w-[90px] button-yellow !h-[39px] !rounded-[20px] justify-center flex items-center  !shadow-[2px_2px_2px_0_rgba(240,231,6,1)]`}
             onClick={(e) => {
               e.stopPropagation();
               followOrUnFollow(1);
@@ -111,7 +111,8 @@ const CascadeInfo = () => {
           </div>
         ) : (
           <div
-            className={`px-4 ml-5 h-[39px] text-first border border-[rgba(249,242,186,1)] rounded-[20px] text-opacity-25 bg-[rgba(249,242,186,0.25)] shadow-[2px_2px_2px_0_rgba(240,231,6,0.2)] flex items-center`}
+            // className={`px-4 ml-5 !h-[39px] text-first border border-[rgba(249,242,186,1)] rounded-[20px] text-opacity-25 bg-[rgba(249,242,186,0.25)] shadow-[2px_2px_2px_0_rgba(240,231,6,0.2)] flex items-center`}
+            className={` select-none ml-5 w-[90px] p h-[39px] text-first border border-[rgba(249,242,186,1)] rounded-[20px] text-opacity-25 bg-[rgba(249,242,186,0.25)] shadow-[2px_2px_2px_0_rgba(240,231,6,0.2)] justify-center flex items-center`}
           >
             Joined
           </div>

@@ -90,9 +90,9 @@ const PieceCard = (props: PieceCardProps) => {
                 zIndex,
               }}
             >
-              <div className="flex">
+              <div className="flex pr-8">
                 <Tooltip title={data?.title}>
-                  <div className="flex-1 font-semibold pr-8 leading-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
+                  <div className="flex-1 font-semibold pr-4 leading-[19px] overflow-hidden whitespace-nowrap text-ellipsis">
                     {data?.title}
                   </div>
                 </Tooltip>

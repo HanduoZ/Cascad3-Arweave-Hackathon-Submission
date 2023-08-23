@@ -7,13 +7,16 @@ import { floorFixedNumber, formatTimestamp } from 'src/utils/common';
 import { ReactComponent as LikeIcon } from 'src/assets/media/svg/icon-like.svg';
 import { ReactComponent as LikedIcon } from 'src/assets/media/svg/icon-liked.svg';
 import { ReactComponent as ViewIcon } from 'src/assets/media/svg/icon-view.svg';
+import { ReactComponent as BranchItIcon } from 'src/assets/media/svg/icon-branch-it.svg';
 import { ReactComponent as PostArrowIcon } from 'src/assets/media/svg/icon-post-arrow.svg';
 import { ReactComponent as WaterIcon } from 'src/assets/media/svg/icon-water.svg';
+import { ReactComponent as BackStarMapIcon } from 'src/assets/media/svg/icon-back-startmap.svg';
 import { ReactComponent as StreamIcon } from 'src/assets/media/svg/icon-stream.svg';
+import { ReactComponent as BranchIcon } from 'src/assets/media/svg/icon-branch.svg';
 import { ExclamationCircleFilled, UserOutlined } from '@ant-design/icons';
 import useUserInfo from 'src/hooks/use-user-info';
 import { Avatar, Modal, Result, message } from 'antd';
-import { clickLikeReq } from 'src/api/cascad/piece';
+import { clickLikeReq, pieceTakeDownReq } from 'src/api/cascad/piece';
 import dynamic from 'next/dynamic';
 import useRouterParams from 'src/hooks/use-router-params';
 import Tag from 'src/components/Tag';
@@ -23,6 +26,7 @@ import StreamCreatorModal from './StreamCreatorModal';
 import { notAuthNotice } from '../../static';
 import useCascadInfo from 'src/hooks/use-cascad-info';
 import SuccessModal from './SuccessModal';
+import Link from 'next/link';
 
 // 联系客服客户端依赖包
 const Editor = dynamic(() => import('src/components/Editor'), {
@@ -38,6 +42,7 @@ const Piece = () => {
   const [visibleStreamModal, setVisibleStreamModal] = useState(false); // 打赏弹框
   const [visibleSuccessModal, setVisibleSuccessModal] = useState(false); // 打赏成功弹框
   const [callbackData, setCallbackData] = useState<any>(); // 成功打赏的数据
+  const [downLoading, setDownLoading] = useState(false); // 下架loading
 
   /** hook-空间详情 */
   const { cascadDetail } = useCascadInfo();
@@ -152,6 +157,37 @@ const Piece = () => {
     setVisibleStreamModal(true);
   };
 
+  /** 下架 */
+  const takeDownPiece = async (id?: number) => {
+    try {
+      if (downLoading || !id) return;
+      setDownLoading(true);
+      const res = await pieceTakeDownReq(id, cascadId);
+      if (res.data.data) {
+        message.success('Success!');
+        setData((data) => ({ ...data, currState: 20 }));
+      }
+    } catch (error) {
+      message.error((error as Error).message);
+    } finally {
+      setDownLoading(false);
+    }
+  };
+
+  /** branchit  */
+  const branchIt = () => {
+    if (!userInfo) {
+      NotLoggedInNotice();
+      return;
+    }
+    // 权限
+    if (cascadDetail?.role === -1) {
+      message.warning(notAuthNotice);
+      return;
+    }
+    router.push(`/${cascadId}/writing/new-post?pieceId=${pieceDetail?.id}`);
+  };
+
   /** 详情查询出错 */
   if (error)
     return (
@@ -162,7 +198,7 @@ const Piece = () => {
     );
 
   return (
-    <div className="pr-[60px] pb-6 text-first">
+    <div className="pr-8 pb-6 text-first">
       {isValidating && !data ? (
         <div className="flex flex-1 justify-center pt-[80px]">
           <div>
@@ -172,9 +208,32 @@ const Piece = () => {
         </div>
       ) : (
         data && (
-          <div className="border-border-sencond border rounded-[10px] p-[50px]">
+          <div className="border-border-sencond border rounded-[10px] p-[50px] relative">
+            <Link href={`/${cascadId}`}>
+              <BackStarMapIcon className="cursor-pointer absolute -left-1 top-10" />
+            </Link>
+            <div className="absolute right-[60px] top-[58px] flex">
+              {userInfo?.id === data.author.id && (
+                <Link href={`/${cascadId}/writing/${data.uuid}`}>
+                  <div className=" button-grey-bg-white">Edit</div>
+                </Link>
+              )}
+              {(cascadDetail?.role === 0 || cascadDetail?.role === 10) &&
+                data.currState !== 20 && (
+                  <div
+                    className=" button-pink-bg-white ml-[10px]"
+                    onClick={() => takeDownPiece(data?.id)}
+                  >
+                    Take Down
+                  </div>
+                )}
+            </div>
+            <BranchIcon
+              onClick={branchIt}
+              className="fixed right-[64px] cursor-pointer z-[1000] top-[500px]"
+            />
             <div>
-              <div className="text-first font-medium text-[38px] leading-[46px]">
+              <div className="text-first font-medium text-[38px] w-[calc(100%-200px)] leading-[46px]">
                 {data?.title}
               </div>
               <div className="text-first font-medium mt-5 text-[20px] leading-[28px]">
@@ -212,43 +271,50 @@ const Piece = () => {
                   </div>
                   <div className="mt-1 flex">
                     <div className="h-[18px] mr-[2px]">Upstreams:</div>
-                    {upStream.length > 0 && (
+                    {upStream.length > 0 ? (
                       <div className="flex flex-wrap">
                         {upStream.map((item, index) => (
                           <div key={item.id} className="flex items-center">
-                            {index !== 0 && (
+                            <a
+                              href={`/${cascadId}/${item.uuid}`}
+                              className="link-underline"
+                            >
+                              {item.title} &nbsp;-&nbsp;
+                              <span className="text-ratio font-semibold">
+                                {item.ratio * 100}%
+                              </span>
+                            </a>
+                            {index !== upStream.length - 1 && (
                               <span className="mr-[10px]">,</span>
                             )}
-                            <a href={`/${cascadId}/${item.uuid}`}>
-                              {item.title}
-                            </a>
-                            &nbsp;-&nbsp;
-                            <span className="text-ratio font-semibold">
-                              {item.ratio * 100}%
-                            </span>
                           </div>
                         ))}
                       </div>
+                    ) : (
+                      '-'
                     )}
                   </div>
                 </div>
               </div>
-              {data?.coverUrl && (
+              {/* {data?.coverUrl && (
                 <img className="w-full mt-[35px]" src={data?.coverUrl} alt="" />
-              )}
+              )} */}
               <div className={styles.postBlocks}>
                 {blocks && blocks?.blocks?.length > 0 && !isValidating && (
                   <Editor readOnly={true} data={blocks} />
                 )}
               </div>
-              {userInfo?.id !== pieceDetail?.createBy && (
-                <div className="text-center my-[30px]">
-                  <StreamIcon
-                    className="cursor-pointer"
-                    onClick={streamCreator}
-                  />
-                </div>
-              )}
+              <div className="flex justify-center my-[30px]">
+                <BranchItIcon onClick={branchIt} className="cursor-pointer" />
+                {userInfo?.id !== pieceDetail?.createBy && (
+                  <div className="text-center ml-[25px]">
+                    <StreamIcon
+                      className="cursor-pointer"
+                      onClick={streamCreator}
+                    />
+                  </div>
+                )}
+              </div>
               <div
                 className={
                   'w-full border-t-[1px] border-border flex items-center p-[18px_19px] justify-between'
@@ -291,7 +357,7 @@ const Piece = () => {
                       href={`https://arseed.web3infra.dev/${data.arId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline"
+                      className="link-underline"
                     >
                       {data?.arId}
                     </a>

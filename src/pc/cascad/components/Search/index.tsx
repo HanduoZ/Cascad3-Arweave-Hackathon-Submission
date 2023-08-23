@@ -62,7 +62,7 @@ const Search = () => {
             <div className="p-4 border-b-[1px] border-border">
               <div className="text-[14px] text-gry mb-4">Tag</div>
               {tagList.length > 0 ? (
-                <Space size={10}>
+                <Space size={10} wrap>
                   {tagList.map((item) => (
                     <div
                       key={item.id}

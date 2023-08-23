@@ -10,10 +10,8 @@ declare module '@editorjs/inline-code';
 declare module '@editorjs/underline';
 declare module '@editorjs/marker';
 declare module '@editorjs/link';
-declare module 'masonry-layout';
+declare module 'editorjs-audio-tool';
 declare module 'compressorjs';
-declare module 'react-responsive-masonry';
-declare module 'react-helmet';
 declare module 'editorjs-hyperlink';
 declare module 'tinycolor2';
 

@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import debounce from 'lodash/debounce';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './index.module.less';
+import { ReactComponent as WrittingSearchIcon } from 'src/assets/media/svg/icon-writting-search.svg';
 
 const { Option } = Select;
 
@@ -56,6 +57,8 @@ const DebounceSelect = ({
     <Select
       filterOption={false}
       onSearch={debounceFetcher}
+      suffixIcon={<WrittingSearchIcon />}
+      className={styles.select}
       popupClassName={clsx(styles.dropdown, className)}
       notFoundContent={
         options.length === 0 ? (

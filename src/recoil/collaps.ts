@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
 
-// cles
-export const collaps = atom({
-  key: 'collaps',
+// drawerOpen
+export const drawerOpen = atom({
+  key: 'drawerOpen',
   default: false,
 });

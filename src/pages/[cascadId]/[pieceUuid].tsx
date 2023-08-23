@@ -3,10 +3,6 @@ import Head from 'next/head';
 import { pieceDetailReq } from 'src/api/cascad/piece';
 
 // 客户端渲染
-const Layout = dynamic(() => import('src/components/Layout'), {
-  ssr: false,
-});
-
 const CascadLayout = dynamic(() => import('src/components/CascadLayout'), {
   ssr: false,
 });
@@ -41,11 +37,9 @@ const CascadPiecePage = (props: CascadPiecePageProps) => {
         <meta property="og:image" content={detail?.logoUrl} />
         <meta property="og:description" content={detail?.description} />
       </Head>
-      <Layout>
-        <CascadLayout>
-          <CascadPiece />
-        </CascadLayout>
-      </Layout>
+      <CascadLayout>
+        <CascadPiece />
+      </CascadLayout>
     </>
   );
 };

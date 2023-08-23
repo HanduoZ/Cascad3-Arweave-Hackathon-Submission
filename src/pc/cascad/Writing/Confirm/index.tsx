@@ -2,6 +2,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 import { Checkbox } from 'antd';
 import { memo } from 'react';
 import ModalPro from 'src/components/ModalPro';
+import useUserInfo from 'src/hooks/use-user-info';
 
 interface ConfirmProps {
   visible: boolean;
@@ -11,6 +12,7 @@ interface ConfirmProps {
 
 const Confirm = (props: ConfirmProps) => {
   const { visible, loading, handleCancle } = props;
+  const { data: userInfo } = useUserInfo();
 
   return (
     <ModalPro
@@ -33,7 +35,8 @@ const Confirm = (props: ConfirmProps) => {
         <div className="flex items-center mt-8 justify-between">
           <Checkbox
             onChange={(e) => {
-              if (e.target.checked) localStorage.setItem('showNotice', 'false');
+              if (e.target.checked)
+                localStorage.setItem(`showNotice-${userInfo?.id}`, 'false');
             }}
           >
             Don't show this again.

@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 const ForgetPage = () => {
   const router = useRouter();
+  const CBUrl = router.query.cburl as string;
 
   const [data, setData] = useState<{
     email: string;
@@ -79,7 +80,7 @@ const ForgetPage = () => {
       });
       if (res.data.status === 1) {
         message.success('Success!');
-        router.push('/login');
+        router.push(CBUrl ? `/login?cburl=${CBUrl}` : '/login');
       }
       setCommitLoading(false);
     } catch (error: any) {
@@ -89,8 +90,8 @@ const ForgetPage = () => {
   };
 
   return (
-    <div className="h-full flex flex-col justify-center items-center">
-      <div>
+    <div className="h-full overflow-y-auto ">
+      <div className="flex flex-col items-center justify-center py-[64px]">
         {status === 0 ? (
           <>
             <div>
